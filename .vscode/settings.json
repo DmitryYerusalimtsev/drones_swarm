@@ -1,0 +1,38 @@
+{
+    "breadcrumbs.enabled": true,
+    "code-runner.clearPreviousOutput": true,
+    "code-runner.executorMap": {
+        "rust": "cargo run # $fileName"
+    },
+    "rust-analyzer.linkedProjects": [
+        "src/drone/Cargo.toml"
+    ],
+    "rust-analyzer.cargo.buildScripts.enable": true,
+    "rust-analyzer.lens.enable": true,
+    "rust-analyzer.procMacro.enable": true,
+    "rust-analyzer.notifications.cargoTomlNotFound": true,
+    "rust-analyzer.trace.server": "verbose",
+    "rust-analyzer.trace.extension": true,
+    "rust-analyzer.workspace.symbol.search.scope": "workspace_and_dependencies",
+    "rust-analyzer.workspace.symbol.search.kind": "all_symbols",
+
+    "cSpell.words": [
+        "consts",
+        "rclrs"
+    ],
+    "python.autoComplete.extraPaths": [
+        "/workspaces/drones_hive/build/sensor_msgs_py",
+        "/workspaces/drones_hive/install/local/lib/python3.10/dist-packages",
+        "/workspaces/drones_hive/install/lib/python3.10/site-packages",
+        "/opt/ros/humble/lib/python3.10/site-packages",
+        "/opt/ros/humble/local/lib/python3.10/dist-packages"
+    ],
+    "python.analysis.extraPaths": [
+        "/workspaces/drones_hive/build/sensor_msgs_py",
+        "/workspaces/drones_hive/install/local/lib/python3.10/dist-packages",
+        "/workspaces/drones_hive/install/lib/python3.10/site-packages",
+        "/opt/ros/humble/lib/python3.10/site-packages",
+        "/opt/ros/humble/local/lib/python3.10/dist-packages"
+    ],
+    "rust-analyzer.showUnlinkedFileNotification": false
+}

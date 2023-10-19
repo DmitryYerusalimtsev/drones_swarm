@@ -1,0 +1,38 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+      {
+        "name": "Cargo: re-build and debug node",
+        "type": "cppdbg",
+        "request": "launch",
+        "program": "${workspaceFolder}/src/${input:package}/target/debug/${input:node}",
+        // "program": "${workspaceFolder}/install/${input:package}/lib/${input:package}/${input:node}",
+        "args": [],
+        "stopAtEntry": true,
+        "cwd": "${workspaceFolder}",
+        "externalConsole": false,
+        "MIMode": "gdb",
+        "setupCommands": [
+          {
+            "description": "Enable pretty-printing for gdb",
+            "text": "-enable-pretty-printing",
+            "ignoreFailures": true
+          }
+        ],
+      }
+    ],
+    "inputs": [
+        {
+          "id": "package",
+          "type": "promptString",
+          "description": "Package name",
+          "default": "drone"
+        },
+        {
+          "id": "node",
+          "type": "promptString",
+          "description": "Node name",
+          "default": "drone"
+        }
+      ]
+}
