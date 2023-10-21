@@ -5,7 +5,7 @@ authors = ["Dmytro Yerusalimtsev <dima.yerusalimtsev@gmail.com>"]
 edition = "2021"
 
 [profile.colcon]
-inherits = "release"
+inherits = "dev"
 
 [[bin]]
 name = "drone"
