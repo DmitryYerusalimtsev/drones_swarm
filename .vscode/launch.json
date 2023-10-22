@@ -2,7 +2,7 @@
     "version": "0.2.0",
     "configurations": [
       {
-        "name": "Cargo: re-build and debug node",
+        "name": "Debug node",
         "type": "cppdbg",
         "request": "launch",
        // "program": "${workspaceFolder}/src/${input:package}/target/debug/${input:node}",
