@@ -19,9 +19,9 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let mut motors = HashSet::new();
     motors.insert(node.name()? + "/motor_0");
-    motors.insert(node.name()? + "/motor_1");
-    motors.insert(node.name()? + "/motor_2");
-    motors.insert(node.name()? + "/motor_3");
+    // motors.insert(node.name()? + "/motor_1");
+    // motors.insert(node.name()? + "/motor_2");
+    // motors.insert(node.name()? + "/motor_3");
 
     let initial_state = State::new(1.5, motors);
     let drone = Drone::new(node, initial_state);

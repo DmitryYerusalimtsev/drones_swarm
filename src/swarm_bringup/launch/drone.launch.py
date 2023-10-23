@@ -4,10 +4,12 @@ from launch_ros.actions import Node
 def generate_launch_description():
     ld = LaunchDescription()
 
+    drone_name = "mavic_mini_4_pro"
+
     drone = Node(
         package = "drone",
         executable = "drone",
-        name = "mavic_mini_4_pro"
+        name = "drone"
     )
     ld.add_action(drone)
 
@@ -16,7 +18,7 @@ def generate_launch_description():
             package = "drone",
             executable = "motor",
             name = "motor_" + str(i),
-            namespace="mavic_mini_4_pro"
+            namespace=drone_name
         )
         ld.add_action(motor)
 

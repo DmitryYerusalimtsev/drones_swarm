@@ -26,9 +26,10 @@ impl State {
 
     pub async fn set_thrust(mut self, required_thrust: f64) {
         let rpm = self.rpm_to_achieve_thrust(required_thrust);
+        let difference = required_thrust - self.thrust;
 
         while self.thrust != required_thrust {
-            self.thrust += required_thrust / NUMBER_OF_ITERATIONS as f64;
+            self.thrust += difference / NUMBER_OF_ITERATIONS as f64;
             self.rpm += rpm / NUMBER_OF_ITERATIONS as f64;
 
             sleep(Duration::from_millis(1000 / NUMBER_OF_ITERATIONS as u64)).await;

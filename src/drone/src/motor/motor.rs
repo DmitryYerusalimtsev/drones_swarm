@@ -22,17 +22,21 @@ impl Motor {
         let pub_motor = Arc::clone(&motor);
         task::spawn(async move { pub_motor.start_state_publishing().await });
 
-        let set_thrust_motor = Arc::clone(&motor);
+        let set_thrust_motor: Arc<Motor> = Arc::clone(&motor);
         task::spawn(async move { set_thrust_motor.set_thrust().await });
 
         motor
     }
 
     async fn set_thrust(&self) {
-        let node_mtx = Arc::clone(&self.node);
         let state_mtx = Arc::clone(&self.state);
 
-        let mut service = node_mtx.lock().unwrap().create_service::<SetThrust::Service>("/set_thrust").unwrap();
+        let mut service = {
+            let mut node = self.node.lock().unwrap();
+            let service_name = format!("{}/set_thrust", node.fully_qualified_name().unwrap());
+            let service = node.create_service::<SetThrust::Service>(service_name.as_str());
+            service.unwrap()
+        };
     
         while let Some(request) = service.next().await {
             println!("Set thrust called.");
@@ -49,14 +53,15 @@ impl Motor {
         }
     }
     
-    async fn start_state_publishing(&self) -> Result<()>{
+    async fn start_state_publishing(&self) -> Result<()> {
         let state_mtx = Arc::clone(&self.state);
 
         let (mut timer, publisher) = {
             let mut node = self.node.lock().unwrap();
             let duration = std::time::Duration::from_millis(500);
             let timer = node.create_wall_timer(duration)?;
-            let publisher = node.create_publisher::<MotorState>("/state", QosProfile::default())?;
+            let topic = format!("/{}/state", node.name()?);
+            let publisher = node.create_publisher::<MotorState>(topic.as_str(), QosProfile::default())?;
             (timer, publisher)
         };
 
