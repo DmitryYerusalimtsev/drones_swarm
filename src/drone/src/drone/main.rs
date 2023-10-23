@@ -3,7 +3,7 @@ mod state;
 
 use std::collections::HashSet;
 use std::time::Duration;
-use r2r::{self, Node};
+use r2r::{Node, Context};
 use tokio::task;
 
 use crate::drone::Drone;
@@ -11,7 +11,7 @@ use crate::state::State;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let ctx = r2r::Context::create()?;
+    let ctx = Context::create()?;
     let node = Node::create(ctx, "drone", "")?;
 
     println!("node name: {}", node.name()?);
