@@ -29,7 +29,6 @@ impl Motor {
     }
 
     async fn set_thrust(&self) {
-        let state_mtx = Arc::clone(&self.state);
 
         let mut service = {
             let mut node = self.node.lock().unwrap();
@@ -41,8 +40,8 @@ impl Motor {
         while let Some(request) = service.next().await {
             println!("Set thrust called.");
 
-            let state = *state_mtx.lock().unwrap();
-            state.set_thrust(request.message.thrust).await;
+            let mut state = self.state.lock().unwrap();
+            state.set_thrust(request.message.thrust);
 
             let response = SetThrust::Response {
                 success: true,
@@ -68,7 +67,7 @@ impl Motor {
         loop {
             timer.tick().await?;
             {
-                let state = state_mtx.lock().unwrap();
+                let state = *state_mtx.lock().unwrap();
                 let message = MotorState {
                     rpm: state.rpm,
                     thrust: state.thrust
