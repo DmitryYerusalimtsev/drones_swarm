@@ -2,26 +2,41 @@ mod drone;
 mod state;
 
 use std::collections::HashSet;
+use std::sync::{Arc, Mutex};
 use std::time::Duration;
-use r2r::{Node, Context};
+use r2r::{Node, Context, RosParams};
 use tokio::task;
 
 use crate::drone::Drone;
 use crate::state::State;
 
+#[derive(RosParams, Default, Debug)]
+struct Params {
+    motors: String
+}
+
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let ctx = Context::create()?;
-    let node = Node::create(ctx, "drone", "")?;
+    let mut node = Node::create(ctx, "drone", "")?;
 
-    println!("node name: {}", node.name()?);
-    println!("node fully qualified name: {}", node.fully_qualified_name()?);
+    let params = Arc::new(Mutex::new(Params::default()));
+    let (_, _) = node.make_derived_parameter_handler(params.clone())?;
+
+    println!("Node started: {}", node.fully_qualified_name()?);
+    println!("Params: {:#?}", params.clone().lock().unwrap());
+
+
+    let params = Arc::new(Mutex::new({
+        let mut p = Params::default();
+        p.motors = "motor_0,motor_1,motor_2,motor_3".into();
+        p
+    }));
 
     let mut motors = HashSet::new();
-    motors.insert(node.name()? + "/motor_0");
-    // motors.insert(node.name()? + "/motor_1");
-    // motors.insert(node.name()? + "/motor_2");
-    // motors.insert(node.name()? + "/motor_3");
+    params.lock().unwrap()
+        .motors.split(",")
+        .for_each(|motor| { motors.insert(node.name().unwrap() + "/" + motor); });
 
     let initial_state = State::new(1.5, motors);
     let drone = Drone::new(node, initial_state);

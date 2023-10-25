@@ -2,7 +2,7 @@ use std::collections::HashMap;
 use std::sync::{Mutex, Arc};
 use futures::StreamExt;
 use r2r::drone_msgs::srv::SetThrust;
-use r2r::{Node, Error};
+use r2r::{Node, Error, Client};
 use r2r::std_srvs::srv::Trigger;
 use tokio::task;
 
@@ -10,14 +10,22 @@ use crate::state::State;
 
 pub struct Drone {
     pub node: Arc<Mutex<Node>>,
-    state: Arc<Mutex<State>>
+    state: Arc<Mutex<State>>,
+    motor_clients: Arc<HashMap<String, Client<SetThrust::Service>>>
 }
 
 impl Drone {
-    pub fn new(node: Node, initial_state: State) -> Arc<Drone> {
+    pub fn new(mut node: Node, initial_state: State) -> Arc<Drone> {
+        let motor_clients = initial_state.motors.iter().map(|motor| {
+            let service = motor.clone() + "/set_thrust";
+            let client = node.create_client::<SetThrust::Service>(service.as_str()).unwrap();
+            (motor.clone(), client)
+        }).collect();
+        
         let drone = Arc::new(Self { 
             node: Arc::new(Mutex::new(node)), 
-            state: Arc::new(Mutex::new(initial_state))
+            state: Arc::new(Mutex::new(initial_state)),
+            motor_clients: Arc::new(motor_clients)
         });
 
         let take_off_drone = Arc::clone(&drone);
@@ -61,15 +69,14 @@ impl Drone {
 
     async fn set_thrust(&self, target_thrust: HashMap<String, f64>) 
         -> HashMap<String, Result<SetThrust::Response, Error>> {
-
-        let node = Arc::clone(&self.node);
         
         let mut tasks = vec![];
         for (motor, thrust) in target_thrust {
-            let service = motor.clone() + "/set_thrust";
-            let client = node.lock().unwrap().create_client::<SetThrust::Service>(service.as_str()).unwrap();
+            let clients = Arc::clone(&self.motor_clients);
+            let motor_name = motor.clone();
 
             let handle = task::spawn(async move {
+                let client = clients.get(&motor_name).unwrap();
                 let request = SetThrust::Request { thrust };
                 client.request(&request).unwrap().await
             });
