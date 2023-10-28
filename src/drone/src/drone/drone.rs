@@ -74,7 +74,7 @@ impl Drone {
         for (motor, thrust) in target_thrust {
             let clients = Arc::clone(&self.motor_clients);
             let motor_name = motor.clone();
-
+            
             let handle = task::spawn(async move {
                 let client = clients.get(&motor_name).unwrap();
                 let request = SetThrust::Request { thrust };

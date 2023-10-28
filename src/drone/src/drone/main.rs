@@ -20,18 +20,15 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let ctx = Context::create()?;
     let mut node = Node::create(ctx, "drone", "")?;
 
-    let params = Arc::new(Mutex::new(Params::default()));
+    let params = Arc::new(Mutex::new({
+        let mut par = Params::default();
+        par.motors = "motor_0,motor_1,motor_2,motor_3".into();
+        par
+    }));
     let (_, _) = node.make_derived_parameter_handler(params.clone())?;
 
     println!("Node started: {}", node.fully_qualified_name()?);
     println!("Params: {:#?}", params.clone().lock().unwrap());
-
-
-    let params = Arc::new(Mutex::new({
-        let mut p = Params::default();
-        p.motors = "motor_0,motor_1,motor_2,motor_3".into();
-        p
-    }));
 
     let mut motors = HashSet::new();
     params.lock().unwrap()
