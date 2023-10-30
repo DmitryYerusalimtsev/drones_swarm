@@ -18,7 +18,7 @@ struct Params {
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let ctx = Context::create()?;
-    let mut node = Node::create(ctx, "drone", "")?;
+    let mut node = Node::create(ctx, "mavic_mini_4_pro", "")?;
 
     let params = Arc::new(Mutex::new({
         let mut par = Params::default();

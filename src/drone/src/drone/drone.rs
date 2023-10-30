@@ -69,24 +69,26 @@ impl Drone {
 
     async fn set_thrust(&self, target_thrust: HashMap<String, f64>) 
         -> HashMap<String, Result<SetThrust::Response, Error>> {
-        
-        let mut tasks = vec![];
-        for (motor, thrust) in target_thrust {
-            let clients = Arc::clone(&self.motor_clients);
-            let motor_name = motor.clone();
-            
-            let handle = task::spawn(async move {
-                let client = clients.get(&motor_name).unwrap();
-                let request = SetThrust::Request { thrust };
-                client.request(&request).unwrap().await
-            });
-            tasks.push((motor, handle));
-        }
 
-        let mut result = HashMap::new();
-        for (motor, handle) in tasks {
-            result.insert(motor, handle.await.unwrap());
-        }
-        result
+        let tasks_number = target_thrust.len();
+
+        futures::stream::iter(
+            target_thrust
+                .into_iter()
+                .map(|(motor, thrust)| {
+                    let clients = Arc::clone(&self.motor_clients);
+
+                    task::spawn(async move {
+                        let client = clients.get(&motor).unwrap();
+                        let request = SetThrust::Request { thrust };
+                        let response = client.request(&request).unwrap().await;
+                        (motor, response)
+                    })
+                })
+        )
+        .buffer_unordered(tasks_number)
+        .map(|res| res.unwrap())
+        .collect::<HashMap<_, _>>()
+        .await
     }
 }
