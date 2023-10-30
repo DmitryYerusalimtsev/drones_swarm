@@ -56,8 +56,6 @@ impl Drone {
                 .map( |(_, r)| r.as_ref().unwrap().message.clone())
                 .or(None);
 
-            println!("{}: Took off successfully.", node_mtx.lock().unwrap().name().unwrap());
-
             let response = Trigger::Response {
                 success: error_message.is_none(),
                 message: error_message.or(Some("".to_string())).unwrap()
