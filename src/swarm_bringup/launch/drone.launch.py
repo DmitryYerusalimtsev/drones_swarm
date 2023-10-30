@@ -9,7 +9,10 @@ def generate_launch_description():
 
     for i in range(4):
         name = "motor_" + str(i)
-        motors = motors + "," + name
+        if not motors:
+            motors = name
+        else:
+            motors = motors + "," + name
 
         motor = Node(
             package = "drone",

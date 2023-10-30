@@ -1,4 +1,5 @@
 use std::sync::{Arc, Mutex};
+use std::time::Duration;
 use r2r::{Node, QosProfile, Result};
 use r2r::drone_msgs::srv::SetThrust;
 use r2r::drone_msgs::msg::MotorState;
@@ -57,8 +58,7 @@ impl Motor {
 
         let (mut timer, publisher) = {
             let mut node = self.node.lock().unwrap();
-            let duration = std::time::Duration::from_millis(500);
-            let timer = node.create_wall_timer(duration)?;
+            let timer = node.create_wall_timer(Duration::from_millis(500))?;
             let topic = format!("/{}/state", node.name()?);
             let publisher = node.create_publisher::<MotorState>(topic.as_str(), QosProfile::default())?;
             (timer, publisher)

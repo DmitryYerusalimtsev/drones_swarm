@@ -33,7 +33,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut motors = HashSet::new();
     params.lock().unwrap()
         .motors.split(",")
-        .for_each(|motor| { motors.insert(node.name().unwrap() + "/" + motor); });
+        .for_each(|motor| { motors.insert(format!("/{}/{}", node.name().unwrap(), motor)); });
 
     let initial_state = State::new(1.5, motors);
     let drone = Drone::new(node, initial_state);
