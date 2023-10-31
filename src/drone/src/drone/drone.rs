@@ -11,7 +11,7 @@ use crate::state::State;
 pub struct Drone {
     pub node: Arc<Mutex<Node>>,
     state: Arc<Mutex<State>>,
-    motor_clients: Arc<HashMap<String, Client<SetThrust::Service>>>
+    motor_clients: Arc<HashMap<String, Client<SetThrust::Service>>>,
 }
 
 impl Drone {
@@ -21,11 +21,11 @@ impl Drone {
             let client = node.create_client::<SetThrust::Service>(service.as_str()).unwrap();
             (motor.clone(), client)
         }).collect();
-        
+
         let drone = Arc::new(Self { 
             node: Arc::new(Mutex::new(node)), 
             state: Arc::new(Mutex::new(initial_state)),
-            motor_clients: Arc::new(motor_clients)
+            motor_clients: Arc::new(motor_clients),
         });
 
         let take_off_drone = Arc::clone(&drone);
@@ -38,7 +38,10 @@ impl Drone {
         let node_mtx = Arc::clone(&self.node);
         let state_mtx = Arc::clone(&self.state);
 
-        let mut service = node_mtx.lock().unwrap().create_service::<Trigger::Service>("/take_off").unwrap();
+        let mut service = {
+            let mut node = node_mtx.lock().unwrap();
+            node.create_service::<Trigger::Service>("/take_off").unwrap()
+        };
     
         while let Some(request) = service.next().await {
             println!("Took off called.");
