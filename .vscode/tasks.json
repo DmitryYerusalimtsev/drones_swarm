@@ -1,33 +1,5 @@
 {
     "version": "2.0.0",
-    "tasks": [
-        {
-            "label": "build",
-            "detail": "Build all packages up to specified",
-            "type": "shell",
-            "command": ". ./build.sh",
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            },
-            "options": {
-                "env": {
-                    "PACKAGE": "${input:package}"
-                }
-            }
-        },
-        {
-            "label": "build_package",
-            "detail": "Build Rust ROS node without dependencies.",
-            "type": "shell",
-            "command": ". ./build_package.sh",
-            "options": {
-                "env": {
-                    "PACKAGE": "${input:package}"
-                }
-            }
-        },
-    ],
     "inputs": [
         {
             "id": "package",
@@ -39,7 +11,7 @@
             "id": "node",
             "type": "promptString",
             "description": "Node name",
-            "default": "motor"
+            "default": "drone"
         }
     ]
 }

@@ -2,10 +2,32 @@
     "version": "0.2.0",
     "configurations": [
       {
+        "name": "Debug Rust ROS2 node",
+        "type": "lldb",
+        "request": "launch",
+        "cargo": {
+            "args": [
+                "build",
+                "--bin=${input:node}",
+                "--package=${input:package}",
+                "--manifest-path=${workspaceFolder}/src/${input:package}/Cargo.toml"
+            ],
+            "filter": {
+                "name": "drone",
+                "kind": "bin"
+            }
+        },
+        "args": [],
+        "cwd": "${workspaceFolder}",
+        "initCommands": [
+            "settings set target.disable-aslr false"
+        ]
+      },
+      {
         "name": "Debug node",
         "type": "cppdbg",
         "request": "launch",
-       "program": "${workspaceFolder}/src/${input:package}/target/debug/${input:node}",
+        "program": "${workspaceFolder}/src/${input:package}/target/debug/${input:node}",
         // "program": "${workspaceFolder}/install/${input:package}/lib/${input:package}/${input:node}",
         "args": [],
         "stopAtEntry": true,
@@ -20,19 +42,5 @@
           }
         ],
       }
-    ],
-    "inputs": [
-        {
-          "id": "package",
-          "type": "promptString",
-          "description": "Package name",
-          "default": "drone"
-        },
-        {
-          "id": "node",
-          "type": "promptString",
-          "description": "Node name",
-          "default": "drone"
-        }
-      ]
+    ]
 }

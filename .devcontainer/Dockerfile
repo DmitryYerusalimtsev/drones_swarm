@@ -7,6 +7,7 @@ RUN apt-get update && apt-get install -y \
     curl \
     git \
     gdb \
+    lldb \
     rust-gdb \
     gdbserver \
     libclang-dev \
@@ -25,6 +26,7 @@ ENV PATH=/root/.cargo/bin:/opt/ros/$ROS_DISTRO/include:$PATH
 RUN pip install --upgrade pytest
 
 RUN echo "source /opt/ros/$ROS_DISTRO/setup.bash" >> ~/.bashrc
+RUN echo "source /workspaces/drones_swarm/install/setup.bash" >> ~/.bashrc
 
 ENV AMENT_PREFIX_PATH=""
 # RUN /install/setup.sh
