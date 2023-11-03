@@ -23,7 +23,7 @@ impl Motor {
         let pub_motor = Arc::clone(&motor);
         task::spawn(async move { pub_motor.start_state_publishing().await });
 
-        let set_thrust_motor: Arc<Motor> = Arc::clone(&motor);
+        let set_thrust_motor = Arc::clone(&motor);
         task::spawn(async move { set_thrust_motor.set_thrust().await });
 
         motor
