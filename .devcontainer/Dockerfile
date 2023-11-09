@@ -29,4 +29,3 @@ RUN echo "source /opt/ros/$ROS_DISTRO/setup.bash" >> ~/.bashrc
 RUN echo "source /workspaces/drones_swarm/install/setup.bash" >> ~/.bashrc
 
 ENV AMENT_PREFIX_PATH=""
-# RUN /install/setup.sh
