@@ -16,7 +16,13 @@ RUN apt-get update && apt-get install -y \
     qtbase5-dev \
     qt5-qmake \
     x11-xserver-utils \
+    mesa-utils \
+    libgl1-mesa-glx \
+    libgl1-mesa-dri \
+    gazebo \
     ros-$ROS_DISTRO-rqt* \
+    ros-$ROS_DISTRO-desktop \
+    ros-$ROS_DISTRO-gazebo* \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Rust
